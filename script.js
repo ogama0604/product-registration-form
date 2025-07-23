@@ -260,4 +260,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
         localStorage.removeItem('editItem');
     }
+
+
+    
 });
+
+
+// --- script.js (入力ページ用) の一番下に追加 ---
+    // 編集モード復元処理
+    const editItem = JSON.parse(localStorage.getItem('editItem'));
+    if (editItem) {
+        categorySelect.value = editItem['ジャンル']; // スプレッドシートの列名でアクセス
+        // categorySelect の change イベントを発火させて、productSelect の選択肢を更新
+        categorySelect.dispatchEvent(new Event('change'));
+
+        setTimeout(() => {
+            // productSelect のオプションがロードされてから値を設定
+            if (productSelect.querySelector(`option[value="${editItem['商品名']}"]`)) {
+                productSelect.value = editItem['商品名'];
+                productInput.style.display = 'none'; // セレクトで選択されるので、手入力は非表示
+            } else {
+                productSelect.value = ''; // セレクトにない場合は空に
+                productInput.value = editItem['商品名']; // 手入力欄に設定
+                productInput.style.display = 'inline-block'; // 手入力欄を表示
+            }
+            unitLabel.textContent = editItem['単位'] || '';
+        }, 100); // 少し遅延させて、productSelectの更新を待つ
+
+        document.getElementById('date').value = editItem['日付'];
+
+        if (storeSelect.querySelector(`option[value="${editItem['店舗名']}"]`)) {
+            storeSelect.value = editItem['店舗名'];
+            storeInput.style.display = 'none'; // セレクトで選択されるので、手入力は非表示
+        } else {
+            storeSelect.value = ''; // セレクトにない場合は空に
+            storeInput.value = editItem['店舗名']; // 手入力欄に設定
+            storeInput.style.display = 'inline-block'; // 手入力欄を表示
+        }
+
+        document.getElementById('weight').value = editItem['重さ/個数'];
+        document.getElementById('price').value = editItem['金額'];
+        document.getElementById('note').value = editItem['メモ'] || '';
+
+        // ★追加：編集対象のrowIndexを隠しフィールドとしてフォームに保持
+        // これがないと、編集後の保存時にスプレッドシートのどこを更新すべきか分からないため
+        // HTMLフォームに隠しフィールドを追加する必要があります
+        let hiddenRowIndexInput = document.getElementById('rowIndex');
+        if (!hiddenRowIndexInput) {
+            hiddenRowIndexInput = document.createElement('input');
+            hiddenRowIndexInput.type = 'hidden';
+            hiddenRowIndexInput.id = 'rowIndex';
+            hiddenRowIndexInput.name = 'rowIndex'; // FormDataで送るためにname属性が必要
+            form.appendChild(hiddenRowIndexInput);
+        }
+        hiddenRowIndexInput.value = editItem.rowIndex;
+
+
+        // 編集モードの場合、ボタンのテキストを変更したり、編集IDを保持したりするなどの処理も可能
+        document.querySelector('button[type="submit"]').textContent = '更新する';
+        alert('編集モードです。情報を変更して更新してください。');
+        localStorage.removeItem('editItem'); // 読み込んだら消去
+    }

@@ -2,133 +2,40 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>商品比較一覧</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px 12px;
-      text-align: center;
-    }
-    th {
-      background-color: #f4f4f4;
-    }
-    .cheapest {
-      background-color: #eaffea;
-      font-weight: bold;
-    }
-    select {
-      padding: 5px;
-      width: 200px;
-    }
-  </style>
-</head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品比較・一覧</title>
+  <link rel="stylesheet" href="style.css"> </head>
 <body>
-  <h1>単価比較一覧</h1>
+  <h1>登録商品一覧・比較</h1>
 
-  <label>商品を選択：
+  <div class="controls">
+    <label for="productSelect">商品を選ぶ：</label>
     <select id="productSelect">
-      <option value="">-- 商品を選択 --</option>
-    </select>
-  </label>
+      <option value="">-- 全ての商品を表示 --</option>
+      </select>
+  </div>
 
   <table id="resultTable">
     <thead>
       <tr>
+        <th>ジャンル</th>
+        <th>商品名</th>
         <th>日付</th>
         <th>店舗</th>
-        <th>重さ / 個数</th>
-        <th>金額</th>
+        <th>重さ/個数</th>
+        <th>金額（円）</th>
         <th>単価</th>
+        <th>単位</th>
         <th>登録時刻</th>
         <th>メモ</th>
         <th>操作</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+      </tbody>
   </table>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const select = document.getElementById('productSelect');
-      const tableBody = document.querySelector('#resultTable tbody');
-      let data = JSON.parse(localStorage.getItem('products') || '[]');
+  <p><a href="index.html">← 入力ページへ戻る</a></p>
 
-      if (!select || !tableBody) return;
-
-      const uniqueNames = [...new Set(data.map(d => d.name).filter(Boolean))];
-      uniqueNames.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.textContent = name;
-        select.appendChild(option);
-      });
-
-      function redrawTable(selectedProduct) {
-        select.value = selectedProduct;
-        tableBody.innerHTML = '';
-
-        const filtered = data
-          .map((item, index) => ({ ...item, _index: index }))
-          .filter(d => d.name === selectedProduct)
-          .sort((a, b) => a.unitPrice - b.unitPrice);
-
-        filtered.forEach((item, i) => {
-          const row = document.createElement('tr');
-          if (i === 0) row.classList.add('cheapest');
-
-          const unitLabel = item.unit === 'g' ? '円/100g' : '円/個';
-
-          row.innerHTML = `
-            <td>${item.date}</td>
-            <td>${item.store}</td>
-            <td>${item.weight}</td>
-            <td>${item.price}</td>
-            <td>${item.unitPrice.toFixed(1)} ${unitLabel}</td>
-            <td>${item.timestamp || ''}</td>
-            <td>${item.note || ''}</td>
-            <td>
-              <button class="edit-btn" data-index="${item._index}">編集</button>
-              <button class="delete-btn" data-index="${item._index}">削除</button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
-      }
-
-      select.addEventListener('change', () => {
-        redrawTable(select.value);
-      });
-
-      tableBody.addEventListener('click', function (e) {
-        if (e.target.classList.contains('delete-btn')) {
-          const index = parseInt(e.target.dataset.index);
-          const selectedProduct = select.value;
-
-          data.splice(index, 1);
-          localStorage.setItem('products', JSON.stringify(data));
-          data = JSON.parse(localStorage.getItem('products') || '[]');
-          redrawTable(selectedProduct);
-        }
-
-        if (e.target.classList.contains('edit-btn')) {
-          const index = parseInt(e.target.dataset.index);
-          const item = data[index];
-          localStorage.setItem('editItem', JSON.stringify({ ...item, index }));
-          window.location.href = 'index.html';
-        }
-      });
-    });
-  </script>
-  <p><a href="index.html">◀ 商品を追加・編集する</a></p>
-
-</body>
+  <script src="view_script.js"></script> </body>
 </html>

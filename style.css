@@ -1,23 +1,148 @@
 body {
   font-family: sans-serif;
   padding: 20px;
-  max-width: 600px;
-  margin: auto;
+  line-height: 1.8;
+  max-width: 1200px; /* 横幅を制限して見やすく */
+  margin: 0 auto; /* 中央寄せ */
 }
-form label, input, button, select {
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+label {
   display: block;
   margin-bottom: 10px;
 }
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  padding: 5px;
+  width: 250px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#unit-label {
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+button {
+  margin-top: 15px;
+  padding: 8px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* --- 表示ページ用のスタイル --- */
+.controls {
+  margin-bottom: 20px;
+}
+
+#productSelect {
+  width: 300px; /* 商品選択プルダウンの幅を調整 */
+  padding: 8px;
+  font-size: 1rem;
+}
+
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* セルの境界線を結合 */
   margin-top: 20px;
 }
+
 th, td {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
-tr.cheapest {
-  background-color: #d4fcd4;
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* 偶数行の背景色 */
+}
+
+tr:hover {
+  background-color: #e0e0e0; /* ホバー時の背景色 */
+}
+
+.edit-btn, .delete-btn {
+  padding: 5px 10px;
+  margin: 0 2px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+  }
+
+  td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+  }
+
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    content: attr(data-label); /* data-label属性の値を表示 */
+    text-align: left;
+    font-weight: bold;
+  }
 }
