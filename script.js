@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const unitLabel = document.getElementById('unit-label');
 
     // ★Apps ScriptのウェブアプリURLをここに貼り付けてください★
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyKbtrHCK9VJh85_y3c2qNysNRbZOWtXXCqNDC9xJuY5LtkSMgRZLGXWBliHvqU3SaF/exec';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwSNOFCFCxtpMIL_xd9iAUzr0ZzWl2G92ltABogxNmYtb5jA-sDNpGW1CARHURSifXX/exec';
 
     const productMap = {
         '野菜': ['トマト', 'キャベツ', 'レタス'],
