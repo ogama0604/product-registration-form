@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // ★登録ページと同じURLを使用 (GASウェブアプリのURL)
     // view_script.js で使っているものと同じ最新のURLを設定してください。
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzTduhi5aUFVrvRWhm7Rfks_nUtyehg6vBDEY8zJyg44KFIQIsW4HSHnAFs9A0F6zvg/exec'; 
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbze88IMRXL_uRvNZoBGCMAYO0HVorHyDuzpgzthNKSQt-KBIgaYguIo_MVYmCCAelrG/exec'; 
 
     const productForm = document.getElementById('productForm'); // index.html の <form id="productForm"> を想定 (HTML側でIDを'form'から'productForm'に変更済み)
     const submitButton = document.getElementById('submitButton'); // フォーム送信ボタンのIDを想定 (HTML側でIDを追加済み)
