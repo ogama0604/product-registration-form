@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwSNOFCFCxtpMIL_xd9iAUzr0ZzWl2G92ltABogxNmYtb5jA-sDNpGW1CARHURSifXX/exec'; // ★登録ページと同じURLを使用
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwP4lp0y2psJ_-jgm8kzZdrgFrkMWQMLsBNr6k0DKq_SkzMov_1x6z0ynddnypeuzF7/exec'; // ★登録ページと同じURLを使用
     const productSelect = document.getElementById('productSelect');
     const resultTableBody = document.querySelector('#resultTable tbody');
 
