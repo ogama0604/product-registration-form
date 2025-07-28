@@ -33,7 +33,7 @@
 </head>
 <body>
   <h1>商品登録フォーム</h1>
-  <form id="form">
+  <form id="productForm">
     <label>ジャンル：
       <select id="category" required>
         <option value="">-- 選択してください --</option>
@@ -44,47 +44,54 @@
     </label>
 
     <label>商品名：
-      <select id="product">
+      <select id="productName" name="productNameSelect"> 
         <option value="">-- 商品を選択 --</option>
       </select>
-      <input type="text" id="product-input" placeholder="自由入力（例：アボカド）">
+      <input type="text" id="productInput" name="productNameInput" placeholder="自由入力（例：アボカド）">
     </label>
 
     <label>日付：
-      <input type="date" id="date" required>
+      <input type="date" id="date" name="date" required>
     </label>
 
     <label>店舗名：
-      <select id="store-select">
+      <select id="storeName" name="storeNameSelect">
         <option value="">-- よく使う店舗から選択 --</option>
         <option value="イオン">イオン</option>
         <option value="西友">西友</option>
         <option value="業務スーパー">業務スーパー</option>
         <option value="ドン・キホーテ">ドン・キホーテ</option>
       </select>
-      <input type="text" id="store-input" placeholder="自由入力（例：○○商店）">
+      <input type="text" id="storeInput" name="storeNameInput" placeholder="自由入力（例：○○商店）">
     </label>
 
     <label>重さ / 個数：
-      <input type="number" id="weight" required>
+      <input type="number" id="weight" name="weight" required>
       <span id="unit-label">g</span>
     </label>
 
+    <label>単価：
+      <input type="number" id="unitPrice" name="unitPrice" step="0.01">
+    </label>
+
+    <label>単位：
+      <input type="text" id="unit" name="unit" placeholder="例：g, 個, mL">
+    </label>
+
     <label>金額（円）：
-      <input type="number" id="price" required>
+      <input type="number" id="price" name="price" required>
     </label>
 
     <label>メモ：
-      <input type="text" id="note" placeholder="例：特売・冷凍など（任意）">
+      <input type="text" id="note" name="note" placeholder="例：特売・冷凍など（任意）">
     </label>
 
-      <input type="hidden" id="rowIndex" name="rowIndex">
+    <input type="hidden" id="rowIndex" name="rowIndex">
 
-    <button type="submit">登録する</button>
+    <button type="submit" id="submitButton">登録する</button>
   </form>
 
   <p><a href="view.html">▶ 表示ページへ</a></p>
-
 
   <script src="script.js"></script>
 </body>
