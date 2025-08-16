@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家計簿入力</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>支出入力</h1>
+
+  <!-- 品目入力リスト -->
+  <div id="items-container"></div>
+  <button type="button" id="add-item-btn">＋ 品目を追加</button>
+
+  <!-- 現在の合計 -->
+  <h3>現在の合計金額: <span id="current-total">0</span> 円</h3>
+
+  <!-- 支払い情報 -->
+  <div class="payment-info">
+    <label>出金元:
+      <input type="text" id="paymentSource">
+    </label>
+    <label>日付:
+      <input type="date" id="date">
+    </label>
+    <label>店舗:
+      <input type="text" id="store">
+    </label>
+  </div>
+
+  <button id="submit-btn">送信</button>
+
+  <script src="input.js"></script>
+</body>
+</html>
