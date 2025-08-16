@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家計簿メニュー</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+      background: #f9f9f9;
+    }
+    h1 {
+      margin-bottom: 1.5em;
+    }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    .menu a {
+      display: block;
+      padding: 1em;
+      background: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      transition: background 0.2s;
+    }
+    .menu a:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>家計簿アプリ</h1>
+  <div class="menu">
+    <a href="input.html">支出入力</a>
+    <a href="history.html">履歴を見る</a>
+    <a href="analysis.html">分析する</a>
+  </div>
+</body>
+</html>
