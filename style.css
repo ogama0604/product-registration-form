@@ -31,3 +31,59 @@ input, select {
 .item input {
   min-width: 140px;
 }
+
+/* カレンダーのスタイル */
+#calendar-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#calendar-header {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#calendar-body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.day-header {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+}
+
+.calendar-day {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar-day:nth-child(7n) {
+    color: red; /* 日曜日 */
+}
+
+.calendar-day:nth-child(7n+1) {
+    color: red; /* 日曜日 */
+}
+
+.total-amount {
+    font-size: 0.8em;
+    color: #4CAF50;
+    font-weight: bold;
+    margin-top: 5px;
+}

@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Google Apps Script WebアプリURL
-    const url = "https://script.google.com/macros/s/AKfycbwppr9GtdP0xZrHXjvhPtIkU073-CnfxTd7OveMltZ_R04sEjUCUMnJYFY4WoVPBUvStw/exec";
+    const url = "https://script.google.com/macros/s/AKfycbz6JOHd-loW-LHiJhcnOdyRRGfX_YcQaeAT5Kq1TgneFXLQQ8ABi5p30-gknY12PDGurQ/exec";
 
     // URLSearchParamsを使ってクエリ文字列を生成
     // JSONデータを文字列化して`data`パラメータに格納
