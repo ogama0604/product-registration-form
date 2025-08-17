@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const historyContainer = document.getElementById("history-container");
 
   // Google Apps Script WebアプリURL
-  const url = "https://script.google.com/macros/s/AKfycbxLU5zjssqAnEUO2LlyaiCys__xSUBR1VSt4y1dpXcnjwHSj8JcksnCjv3V1uGf1YvDMw/exec";
+  const url = "https://script.google.com/macros/s/AKfycbx7QUy6p85oQ8534te7dUjJ_HpnYSYLk45_scbhJPcbqs90LgOfFuBmcyKQ8Z4dX2OLZA/exec";
 
   // 履歴データを取得
   fetch(url)
