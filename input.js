@@ -120,22 +120,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const store = document.getElementById("store").value;
     const totalAmount = document.getElementById("current-total").textContent;
 
-    // Google Apps Script WebアプリURL
-    const url = "https://script.google.com/macros/s/AKfycbwynislqUiqJgarrkVwtXIwJ5_CjLyhqmukCOLvJpVAdf7WaVoARRkBmLQr1GKxXnLi/exec";
+    // 全データを1つのオブジェクトにまとめる
+    const dataToSend = {
+      items,
+      paymentSource,
+      date,
+      store,
+      totalAmount
+    };
 
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        items,
-        paymentSource,
-        date,
-        store,
-        totalAmount
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
+    // Google Apps Script WebアプリURL
+    const url = "https://script.google.com/macros/s/AKfycbz_XOggspI6_4s0XwlQlKr0Y6-9LT6l5i_0AwbT7y6zwpDUTm84oEB-oSxCwjHzpXVJZg/exec";
+
+    // URLSearchParamsを使ってクエリ文字列を生成
+    // JSONデータを文字列化して`data`パラメータに格納
+    const params = new URLSearchParams({
+      data: JSON.stringify(dataToSend)
+    }).toString();
+
+    // GETリクエストでデータを送信
+    fetch(`${url}?${params}`)
       .then(res => res.text())
       .then(text => {
         alert("送信完了しました！");
