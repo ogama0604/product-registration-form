@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalAmount = document.getElementById("current-total").textContent;
 
     // Google Apps Script WebアプリURL
-    const url = "https://script.google.com/macros/s/AKfycbygi2P7sUyUpYanGEoz0Zw76yx7UG2WOlGufTWAu89ZIjpIrrld1P-ZzerXR-PkWJPNWg/exec";
+    const url = "https://script.google.com/macros/s/AKfycbzxpYYR3jschhmJ58n-EoMB_S0s3eMh7dXxKHuTHa-2HfDPJmZEh4aMB8tR3TpYAnlwUA/exec";
 
     fetch(url, {
       method: "POST",
