@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Google Apps Script WebアプリURL
     // ★★★ input.jsと同じURLをここにも貼り付けてください ★★★
-    const gasUrl = "https://script.google.com/macros/s/AKfycbwKpviqkwDbwOngg6ThDbLdZdw8swNOIFvAH4sSK39AYsZYI_pCTOnZ0jetyxILy-YmDQ/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbwppr9GtdP0xZrHXjvhPtIkU073-CnfxTd7OveMltZ_R04sEjUCUMnJYFY4WoVPBUvStw/exec";
 
     // --- データをGASから取得する関数 ---
     async function fetchDataFromGAS() {
