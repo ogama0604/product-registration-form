@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentTotalEl = document.getElementById("current-total");
   const submitBtn = document.getElementById("submit-btn");
 
+  // 出金元の定義
+  const paymentSources = ["PayPay", "現金", "Oliveクレジット"];
+
   // --- 品目入力欄を追加する関数 ---
   function addItemRow() {
     const div = document.createElement("div");
@@ -99,6 +102,19 @@ document.addEventListener("DOMContentLoaded", () => {
     currentTotalEl.textContent = total;
   }
 
+  // --- 全ての入力欄をクリアする関数 ---
+  function clearAllInputs() {
+    // 品目欄をクリアして、1行だけに戻す
+    itemsContainer.innerHTML = '';
+    addItemRow();
+    
+    // その他の入力欄をクリア
+    document.getElementById("paymentSource").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("store").value = "";
+    currentTotalEl.textContent = "0";
+  }
+
   // --- データ送信 ---
   function submitData() {
     const items = [];
@@ -144,6 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(text => {
         alert("送信完了しました！");
         console.log(text);
+        // ★★★ 成功時にクリア関数を実行 ★★★
+        clearAllInputs();
       })
       .catch(err => {
         console.error("送信失敗:", err);
@@ -154,6 +172,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- 初期化 ---
   addItemBtn.addEventListener("click", addItemRow);
   submitBtn.addEventListener("click", submitData);
+  
+  // ★★★ 出金元のプルダウンを生成 ★★★
+  const paymentSourceSelect = document.createElement("select");
+  paymentSourceSelect.id = "paymentSource"; // idを既存の要素と合わせる
+  paymentSourceSelect.innerHTML = `<option value="">出金元を選択</option>`;
+  paymentSources.forEach(source => {
+      const option = document.createElement("option");
+      option.value = source;
+      option.textContent = source;
+      paymentSourceSelect.appendChild(option);
+  });
+  
+  // 元のinput要素を置き換える (HTML側でid="paymentSource"の要素がある前提)
+  const originalPaymentSource = document.getElementById("paymentSource");
+  if (originalPaymentSource) {
+      originalPaymentSource.parentNode.replaceChild(paymentSourceSelect, originalPaymentSource);
+  }
 
   // 最初に1行追加
   addItemRow();
