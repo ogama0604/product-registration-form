@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Google Apps Script WebアプリURL
     // ★★★ ここにご自身のGASのURLを貼り付けてください ★★★
-    const gasUrl = "https://script.google.com/macros/s/AKfycbwsFr_dByogp-XEcK7rRSCCcbaWYHmiufdQ4Nsra05e0DCmMZhLDHrxkT2cI3DMweZ23Q/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycby5Flh91_B8U_yGhmLhchMsBY5_iFUrSaci3o--MxGJKedL8KzlOhs_150zXg_PUovPQA/exec";
 
     // --- 品目入力欄を追加する関数 (新規入力用) ---
     function addItemRow() {

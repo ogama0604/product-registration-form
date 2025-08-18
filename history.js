@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentMonthYear = document.getElementById('current-month-year');
     
     // Google Apps Script WebアプリURL
-    const gasUrl = "https://script.google.com/macros/s/AKfycbwsFr_dByogp-XEcK7rRSCCcbaWYHmiufdQ4Nsra05e0DCmMZhLDHrxkT2cI3DMweZ23Q/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycby5Flh91_B8U_yGhmLhchMsBY5_iFUrSaci3o--MxGJKedL8KzlOhs_150zXg_PUovPQA/exec";
     
     let allData = [];
 
