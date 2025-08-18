@@ -150,29 +150,33 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const isEditMode = !!editData;
+        const items = [];
+        document.querySelectorAll(".item-row").forEach(row => {
+            const inputs = row.querySelectorAll("input, select");
+            items.push({
+                name: inputs[0].value,
+                categoryLarge: inputs[1].value,
+                categorySmall: inputs[2].value,
+                quantity: inputs[3].value,
+                unit: inputs[4].value,
+                price: inputs[5].value,
+                memo: inputs[6].value
+            });
+        });
+
+        // 共通のデータ部分
+        const commonData = {
+            date: inputDate ? inputDate.value : '',
+            store: inputStore ? inputStore.value : '',
+            paymentSource: paymentSourceSelect ? paymentSourceSelect.value : ''
+        };
         
         if (isEditMode) {
             // 編集の場合はGETリクエスト
-            const items = [];
-            document.querySelectorAll(".item-row").forEach(row => {
-                const inputs = row.querySelectorAll("input, select");
-                items.push({
-                    name: inputs[0].value,
-                    categoryLarge: inputs[1].value,
-                    categorySmall: inputs[2].value,
-                    quantity: inputs[3].value,
-                    unit: inputs[4].value,
-                    price: inputs[5].value,
-                    memo: inputs[6].value
-                });
-            });
-            
             const dataToSend = {
                 type: 'edit',
                 rowIndex: editData.rowIndex,
-                date: inputDate.value,
-                store: inputStore.value,
-                paymentSource: paymentSourceSelect.value,
+                ...commonData, // 共通データを展開
                 name: items[0].name,
                 largeCategory: items[0].categoryLarge,
                 smallCategory: items[0].categorySmall,
@@ -201,26 +205,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } else {
             // 新規追加の場合はGETリクエスト
-            const items = [];
-            document.querySelectorAll(".item-row").forEach(row => {
-                const inputs = row.querySelectorAll("input, select");
-                items.push({
-                    name: inputs[0].value,
-                    categoryLarge: inputs[1].value,
-                    categorySmall: inputs[2].value,
-                    quantity: inputs[3].value,
-                    unit: inputs[4].value,
-                    price: inputs[5].value,
-                    memo: inputs[6].value
-                });
-            });
-            
             const dataToSend = {
                 items: items,
-                paymentSource: paymentSourceSelect.value,
-                date: inputDate.value,
-                store: inputStore.value,
-                totalAmount: currentTotalEl.textContent,
+                ...commonData, // 共通データを展開
+                totalAmount: currentTotalEl ? currentTotalEl.textContent : '',
                 type: 'add'
             };
 
