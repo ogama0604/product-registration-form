@@ -27,6 +27,25 @@
 
   <h2>詳細リスト</h2>
   <div id="history-container">読み込み中...</div>
+  
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h3>支出を編集</h3>
+      <input type="hidden" id="edit-row-index">
+      <label>日付: <input type="date" id="edit-date"></label>
+      <label>大カテゴリ: <select id="edit-large-category"></select></label>
+      <label>小カテゴリ: <select id="edit-small-category"></select></label>
+      <label>品目: <input type="text" id="edit-name"></label>
+      <label>数量: <input type="number" id="edit-quantity"></label>
+      <label>単位: <select id="edit-unit"></select></label>
+      <label>金額: <input type="number" id="edit-price"></label>
+      <label>店舗: <input type="text" id="edit-store"></label>
+      <label>出金元: <select id="edit-paymentSource"></select></label>
+      <label>メモ: <input type="text" id="edit-memo"></label>
+      <button id="save-edit-btn">保存</button>
+    </div>
+  </div>
 
   <br>
   <a href="index.html">トップへ戻る</a>
