@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const encodedData = encodeURIComponent(JSON.stringify(rowData));
         
         // input.htmlにリダイレクトし、URLにデータを付加
-        window.location.href = `index.html?editData=${encodedData}`;
+        window.location.href = `input.html?editData=${encodedData}`;
     }
 
     // ページ読み込み時にデータを取得

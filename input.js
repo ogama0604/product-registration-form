@@ -1,3 +1,5 @@
+// input.js (完全版)
+
 // --- 大カテゴリと小カテゴリの定義 ---
 const categories = {
     "食費": ["食料品", "外食", "テイクアウト"],
@@ -172,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 memo: items[0].memo
             };
         } else {
+            dataToSend.action = 'add';
             dataToSend.items = items;
             dataToSend.paymentSource = paymentSourceSelect.value;
             dataToSend.date = inputDate.value;
@@ -181,15 +184,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const response = await fetch(gasUrl, {
-                method: isEditMode ? "POST" : "GET",
-                body: isEditMode ? JSON.stringify(dataToSend) : new URLSearchParams({ data: JSON.stringify(dataToSend) }),
-                headers: isEditMode ? { 'Content-Type': 'application/json' } : {}
+                method: "POST",
+                body: JSON.stringify(dataToSend),
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            const resultText = await response.text();
-            console.log(resultText);
+            const result = await response.json();
 
-            if (response.ok) {
+            if (result.success) {
                 alert(isEditMode ? "編集を保存しました！" : "送信完了しました！");
                 if (isEditMode) {
                     window.location.href = 'history.html'; // 履歴ページに戻る
@@ -197,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     clearAllInputs();
                 }
             } else {
-                throw new Error(resultText);
+                alert(`送信に失敗しました: ${result.message}`);
             }
         } catch (err) {
             console.error("送信失敗:", err);
