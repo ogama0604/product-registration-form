@@ -29,11 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Google Apps Script WebアプリURL
     // ★★★ ここにご自身のGASのURLを貼り付けてください ★★★
-    const gasUrl = "https://script.google.com/macros/s/AKfycbxPjG8L8T_9pI-i-WyLWL1q9wg_N6Op5-cXPEKRu0xsdHGEMUEk3l6unyvyyHVxIbQQkw/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbwsFr_dByogp-XEcK7rRSCCcbaWYHmiufdQ4Nsra05e0DCmMZhLDHrxkT2cI3DMweZ23Q/exec";
 
     // --- 品目入力欄を追加する関数 (新規入力用) ---
     function addItemRow() {
-        const div = createItemRow({}); // createItemRow関数を再利用
+        const div = createItemRow({});
         itemsContainer.appendChild(div);
     }
 
@@ -146,75 +146,109 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const isEditMode = !!editData;
-        const items = [];
-        document.querySelectorAll(".item-row").forEach(row => {
-            const inputs = row.querySelectorAll("input, select");
-            items.push({
-                name: inputs[0].value,
-                categoryLarge: inputs[1].value,
-                categorySmall: inputs[2].value,
-                quantity: inputs[3].value,
-                unit: inputs[4].value,
-                price: inputs[5].value,
-                memo: inputs[6].value
-            });
-        });
         
-        const dataToSend = {};
-        
-        // 編集モードと新規追加モードでデータを分ける
         if (isEditMode) {
-            dataToSend.action = 'edit';
-            dataToSend.rowIndex = editData.rowIndex;
-            dataToSend.data = {
-                date: inputDate.value,
-                store: inputStore.value,
-                paymentSource: paymentSourceSelect.value,
-                name: items[0].name,
-                largeCategory: items[0].categoryLarge,
-                smallCategory: items[0].categorySmall,
-                price: items[0].price,
-                quantity: items[0].quantity,
-                unit: items[0].unit,
-                memo: items[0].memo
-            };
-        } else {
-            dataToSend.action = 'add'; // 新規追加にはactionを追加
-            dataToSend.items = items;
-            dataToSend.paymentSource = paymentSourceSelect.value;
-            dataToSend.date = inputDate.value;
-            dataToSend.store = inputStore.value;
-            dataToSend.totalAmount = currentTotalEl.textContent;
-        }
-
-        try {
-            const response = await fetch(gasUrl, {
-                method: "POST",
-                body: JSON.stringify(dataToSend),
-                headers: { 'Content-Type': 'application/json' }
+            // 編集の場合はPOSTリクエスト
+            const items = [];
+            document.querySelectorAll(".item-row").forEach(row => {
+                const inputs = row.querySelectorAll("input, select");
+                items.push({
+                    name: inputs[0].value,
+                    categoryLarge: inputs[1].value,
+                    categorySmall: inputs[2].value,
+                    quantity: inputs[3].value,
+                    unit: inputs[4].value,
+                    price: inputs[5].value,
+                    memo: inputs[6].value
+                });
             });
+            
+            const dataToSend = {
+                action: 'edit',
+                rowIndex: editData.rowIndex,
+                data: {
+                    date: inputDate.value,
+                    store: inputStore.value,
+                    paymentSource: paymentSourceSelect.value,
+                    name: items[0].name,
+                    largeCategory: items[0].categoryLarge,
+                    smallCategory: items[0].categorySmall,
+                    price: items[0].price,
+                    quantity: items[0].quantity,
+                    unit: items[0].unit,
+                    memo: items[0].memo
+                }
+            };
 
-            const result = await response.json();
+            try {
+                const response = await fetch(gasUrl, {
+                    method: "POST",
+                    body: JSON.stringify(dataToSend),
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-            if (result.success) {
-                alert(isEditMode ? "編集を保存しました！" : "送信完了しました！");
-                if (isEditMode) {
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("編集を保存しました！");
                     window.location.href = 'history.html';
                 } else {
-                    clearAllInputs();
+                    alert(`送信に失敗しました: ${result.message}`);
                 }
-            } else {
-                alert(`送信に失敗しました: ${result.message}`);
+            } catch (err) {
+                console.error("送信失敗:", err);
+                alert(`送信に失敗しました: ${err.message}`);
             }
-        } catch (err) {
-            console.error("送信失敗:", err);
-            alert(`送信に失敗しました: ${err.message}`);
+
+        } else {
+            // 新規追加の場合はGETリクエスト
+            const items = [];
+            document.querySelectorAll(".item-row").forEach(row => {
+                const inputs = row.querySelectorAll("input, select");
+                items.push({
+                    name: inputs[0].value,
+                    categoryLarge: inputs[1].value,
+                    categorySmall: inputs[2].value,
+                    quantity: inputs[3].value,
+                    unit: inputs[4].value,
+                    price: inputs[5].value,
+                    memo: inputs[6].value
+                });
+            });
+            
+            const dataToSend = {
+                items: items,
+                paymentSource: paymentSourceSelect.value,
+                date: inputDate.value,
+                store: inputStore.value,
+                totalAmount: currentTotalEl.textContent,
+                type: 'add' // GAS側で新規追加を判定するためのパラメータを追加
+            };
+
+            const params = new URLSearchParams({
+                data: JSON.stringify(dataToSend)
+            }).toString();
+
+            try {
+                const response = await fetch(`${gasUrl}?${params}`);
+                const resultText = await response.text();
+
+                // GASのdoGetはJSONを返さないため、テキストとして処理
+                if (resultText.includes("Data successfully received and appended.")) {
+                    alert("送信完了しました！");
+                    clearAllInputs();
+                } else {
+                    alert(`送信に失敗しました: ${resultText}`);
+                }
+            } catch (err) {
+                console.error("送信失敗:", err);
+                alert(`送信に失敗しました: ${err.message}`);
+            }
         }
     }
 
     // --- 初期化処理 ---
     function initialize() {
-        // 出金元のプルダウンを生成
         paymentSources.forEach(source => {
             const option = document.createElement("option");
             option.value = source;
@@ -223,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (editData) {
-            // 編集モード
             inputDate.value = editData.date;
             inputStore.value = editData.store;
             paymentSourceSelect.value = editData.paymentSource;
@@ -235,7 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
             submitBtn.textContent = '編集を保存';
             addItemBtn.style.display = 'none';
         } else {
-            // 新規追加モード
             addItemRow();
         }
 
