@@ -15,69 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const historyContainer = document.getElementById('history-container');
     const calendarBody = document.getElementById('calendar-body');
     const currentMonthYear = document.getElementById('current-month-year');
-    const modal = document.getElementById('edit-modal');
-    const closeBtn = document.querySelector('.close-btn');
-    const saveEditBtn = document.getElementById('save-edit-btn');
     
-    // 編集モーダルの入力欄
-    const editLargeCategorySelect = document.getElementById('edit-large-category');
-    const editSmallCategorySelect = document.getElementById('edit-small-category');
-    const editUnitSelect = document.getElementById('edit-unit');
-    const editPaymentSourceSelect = document.getElementById('edit-paymentSource');
-
     // Google Apps Script WebアプリURL
-    const gasUrl = "https://script.google.com/macros/s/AKfycbyIzDaM8v85M8NDiQl1YH255YORvnKFeYMl8LAOEZqTnIag24jO2w-Xu0UosPhNFLakGA/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbxPjG8L8T_9pI-i-WyLWL1q9wg_N6Op5-cXPEKRu0xsdHGEMUEk3l6unyvyyHVxIbQQkw/exec";
     
     let allData = [];
 
-    // 編集モーダルを閉じる
-    closeBtn.onclick = () => { modal.style.display = 'none'; };
-    window.onclick = (event) => { if (event.target == modal) modal.style.display = 'none'; };
-
-    // 編集モーダルのプルダウンを初期化する
-    function setupEditDropdowns() {
-        // 大カテゴリ
-        editLargeCategorySelect.innerHTML = `<option value="">大カテゴリ</option>`;
-        Object.keys(categories).forEach(cat => {
-            const option = document.createElement("option");
-            option.value = cat;
-            option.textContent = cat;
-            editLargeCategorySelect.appendChild(option);
-        });
-
-        // 小カテゴリの連動
-        editLargeCategorySelect.addEventListener("change", () => {
-            const selected = editLargeCategorySelect.value;
-            editSmallCategorySelect.innerHTML = `<option value="">小カテゴリ</option>`;
-            if (categories[selected]) {
-                categories[selected].forEach(sub => {
-                    const option = document.createElement("option");
-                    option.value = sub;
-                    option.textContent = sub;
-                    editSmallCategorySelect.appendChild(option);
-                });
-            }
-        });
-
-        // 単位
-        editUnitSelect.innerHTML = `<option value="">単位</option>`;
-        units.forEach(unit => {
-            const option = document.createElement("option");
-            option.value = unit;
-            option.textContent = unit;
-            editUnitSelect.appendChild(option);
-        });
-        
-        // 出金元
-        editPaymentSourceSelect.innerHTML = `<option value="">出金元</option>`;
-        paymentSources.forEach(source => {
-            const option = document.createElement("option");
-            option.value = source;
-            option.textContent = source;
-            editPaymentSourceSelect.appendChild(option);
-        });
-    }
-    
     // --- データをGASから取得する関数 ---
     async function fetchDataFromGAS() {
         try {
@@ -130,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
         monthSelect.addEventListener('change', updateDisplay);
         
         updateDisplay();
-        setupEditDropdowns(); // プルダウン初期化
     }
     
     // --- 表示を更新するメイン関数 ---
@@ -276,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await response.json();
             if (result.success) {
                 alert('削除しました。');
-                // ページを再読み込みして最新の状態にする
                 location.reload(); 
             } else {
                 alert('削除に失敗しました: ' + result.message);
@@ -287,68 +228,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- 編集処理 ---
+    // --- 編集処理（入力ページに遷移） ---
     function handleEdit(event) {
         const rowIndex = event.target.dataset.rowIndex;
         const rowData = allData.find(d => d.rowIndex == rowIndex);
         
-        if (!rowData) return;
-
-        // モーダルの入力欄にデータをセット
-        document.getElementById('edit-row-index').value = rowIndex;
-        document.getElementById('edit-date').value = rowData.date;
-        editLargeCategorySelect.value = rowData.categoryLarge;
-        // 小カテゴリの選択肢を再生成して値をセット
-        editLargeCategorySelect.dispatchEvent(new Event('change'));
-        editSmallCategorySelect.value = rowData.categorySmall;
-        document.getElementById('edit-name').value = rowData.name;
-        document.getElementById('edit-quantity').value = rowData.quantity;
-        editUnitSelect.value = rowData.unit;
-        document.getElementById('edit-price').value = rowData.price;
-        document.getElementById('edit-store').value = rowData.store;
-        editPaymentSourceSelect.value = rowData.paymentSource;
-        document.getElementById('edit-memo').value = rowData.memo;
-
-        // モーダルを表示
-        modal.style.display = 'block';
-    }
-
-    // --- 編集保存処理 ---
-    saveEditBtn.addEventListener('click', async () => {
-        const rowIndex = document.getElementById('edit-row-index').value;
-        const editedData = {
-            date: document.getElementById('edit-date').value,
-            largeCategory: editLargeCategorySelect.value,
-            smallCategory: editSmallCategorySelect.value,
-            name: document.getElementById('edit-name').value,
-            quantity: document.getElementById('edit-quantity').value,
-            unit: editUnitSelect.value,
-            price: document.getElementById('edit-price').value,
-            store: document.getElementById('edit-store').value,
-            paymentSource: editPaymentSourceSelect.value,
-            memo: document.getElementById('edit-memo').value
-        };
-
-        try {
-            const response = await fetch(gasUrl, {
-                method: "POST",
-                body: JSON.stringify({ action: 'edit', rowIndex: rowIndex, data: editedData }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                alert('編集を保存しました。');
-                modal.style.display = 'none';
-                location.reload(); // ページを再読み込み
-            } else {
-                alert('編集の保存に失敗しました: ' + result.message);
-            }
-        } catch (error) {
-            console.error('編集失敗:', error);
-            alert('編集中にエラーが発生しました。');
+        if (!rowData) {
+            alert('編集データが見つかりませんでした。');
+            return;
         }
-    });
+
+        // データをJSON文字列に変換し、URLエンコードする
+        const encodedData = encodeURIComponent(JSON.stringify(rowData));
+        
+        // input.htmlにリダイレクトし、URLにデータを付加
+        window.location.href = `index.html?editData=${encodedData}`;
+    }
 
     // ページ読み込み時にデータを取得
     fetchDataFromGAS();
