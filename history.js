@@ -1,3 +1,5 @@
+// history.js (完全版)
+
 // --- 大カテゴリと小カテゴリの定義（input.jsと合わせる） ---
 const categories = {
     "食費": ["食料品", "外食", "テイクアウト"],
@@ -17,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentMonthYear = document.getElementById('current-month-year');
     
     // Google Apps Script WebアプリURL
-    const gasUrl = "https://script.google.com/macros/s/AKfycby5Flh91_B8U_yGhmLhchMsBY5_iFUrSaci3o--MxGJKedL8KzlOhs_150zXg_PUovPQA/exec";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbzWYJ7i7ECN6KaiGiGkqWI27rNO9-dkwBg8TzPE9smevuZMRKhszwPw-nWOWOB8BU7V9A/exec";
     
     let allData = [];
 
@@ -167,7 +169,6 @@ document.addEventListener("DOMContentLoaded", () => {
         table.appendChild(thead);
 
         const tbody = document.createElement("tbody");
-        // 日付で降順にソート
         data.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(row => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
@@ -200,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 削除処理 ---
+    // --- 削除処理（GETリクエストに変更） ---
     async function handleDelete(event) {
         if (!confirm('本当にこの支出を削除しますか？')) {
             return;
@@ -209,18 +210,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const rowIndex = event.target.dataset.rowIndex;
         
         try {
-            const response = await fetch(gasUrl, {
-                method: "POST",
-                body: JSON.stringify({ action: 'delete', rowIndex: rowIndex }),
-                headers: { 'Content-Type': 'application/json' }
-            });
+            // GETリクエストで削除データを送信
+            const response = await fetch(`${gasUrl}?type=delete&rowIndex=${rowIndex}`);
             
-            const result = await response.json();
-            if (result.success) {
+            const resultText = await response.text();
+            if (resultText.includes("Row deleted successfully.")) {
                 alert('削除しました。');
                 location.reload(); 
             } else {
-                alert('削除に失敗しました: ' + result.message);
+                alert('削除に失敗しました: ' + resultText);
             }
         } catch (error) {
             console.error('削除失敗:', error);
