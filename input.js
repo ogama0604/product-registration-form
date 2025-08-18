@@ -15,7 +15,11 @@ const urlParams = new URLSearchParams(window.location.search);
 const editDataParam = urlParams.get('editData');
 let editData = null;
 if (editDataParam) {
-    editData = JSON.parse(decodeURIComponent(editDataParam));
+    try {
+        editData = JSON.parse(decodeURIComponent(editDataParam));
+    } catch (e) {
+        console.error("Failed to parse editData from URL:", e);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -135,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
         itemsContainer.innerHTML = '';
         addItemRow();
         
-        inputDate.value = "";
-        inputStore.value = "";
-        paymentSourceSelect.value = "";
-        currentTotalEl.textContent = "0";
+        if (inputDate) inputDate.value = "";
+        if (inputStore) inputStore.value = "";
+        if (paymentSourceSelect) paymentSourceSelect.value = "";
+        if (currentTotalEl) currentTotalEl.textContent = "0";
     }
 
     // --- データ送信（新規追加・編集） ---
@@ -148,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const isEditMode = !!editData;
         
         if (isEditMode) {
-            // 編集の場合はPOSTリクエスト
+            // 編集の場合はGETリクエスト
             const items = [];
             document.querySelectorAll(".item-row").forEach(row => {
                 const inputs = row.querySelectorAll("input, select");
@@ -164,40 +168,35 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             
             const dataToSend = {
-                action: 'edit',
+                type: 'edit',
                 rowIndex: editData.rowIndex,
-                data: {
-                    date: inputDate.value,
-                    store: inputStore.value,
-                    paymentSource: paymentSourceSelect.value,
-                    name: items[0].name,
-                    largeCategory: items[0].categoryLarge,
-                    smallCategory: items[0].categorySmall,
-                    price: items[0].price,
-                    quantity: items[0].quantity,
-                    unit: items[0].unit,
-                    memo: items[0].memo
-                }
+                date: inputDate.value,
+                store: inputStore.value,
+                paymentSource: paymentSourceSelect.value,
+                name: items[0].name,
+                largeCategory: items[0].categoryLarge,
+                smallCategory: items[0].categorySmall,
+                price: items[0].price,
+                quantity: items[0].quantity,
+                unit: items[0].unit,
+                memo: items[0].memo
             };
 
+            const params = new URLSearchParams({ data: JSON.stringify(dataToSend) }).toString();
+            
             try {
-                const response = await fetch(gasUrl, {
-                    method: "POST",
-                    body: JSON.stringify(dataToSend),
-                    headers: { 'Content-Type': 'application/json' }
-                });
+                const response = await fetch(`${gasUrl}?${params}`);
+                const resultText = await response.text();
 
-                const result = await response.json();
-
-                if (result.success) {
+                if (resultText.includes("Row updated successfully.")) {
                     alert("編集を保存しました！");
                     window.location.href = 'history.html';
                 } else {
-                    alert(`送信に失敗しました: ${result.message}`);
+                    alert(`編集に失敗しました: ${resultText}`);
                 }
             } catch (err) {
-                console.error("送信失敗:", err);
-                alert(`送信に失敗しました: ${err.message}`);
+                console.error("編集失敗:", err);
+                alert(`編集に失敗しました: ${err.message}`);
             }
 
         } else {
@@ -222,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 date: inputDate.value,
                 store: inputStore.value,
                 totalAmount: currentTotalEl.textContent,
-                type: 'add' // GAS側で新規追加を判定するためのパラメータを追加
+                type: 'add'
             };
 
             const params = new URLSearchParams({
@@ -233,7 +232,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const response = await fetch(`${gasUrl}?${params}`);
                 const resultText = await response.text();
 
-                // GASのdoGetはJSONを返さないため、テキストとして処理
                 if (resultText.includes("Data successfully received and appended.")) {
                     alert("送信完了しました！");
                     clearAllInputs();
@@ -249,30 +247,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- 初期化処理 ---
     function initialize() {
-        paymentSources.forEach(source => {
-            const option = document.createElement("option");
-            option.value = source;
-            option.textContent = source;
-            paymentSourceSelect.appendChild(option);
-        });
+        // 出金元のプルダウンを生成
+        if (paymentSourceSelect) {
+            paymentSources.forEach(source => {
+                const option = document.createElement("option");
+                option.value = source;
+                option.textContent = source;
+                paymentSourceSelect.appendChild(option);
+            });
+        }
 
         if (editData) {
-            inputDate.value = editData.date;
-            inputStore.value = editData.store;
-            paymentSourceSelect.value = editData.paymentSource;
+            // 編集モード
+            if (inputDate) inputDate.value = editData.date || '';
+            if (inputStore) inputStore.value = editData.store || '';
+            if (paymentSourceSelect) paymentSourceSelect.value = editData.paymentSource || '';
             
             itemsContainer.innerHTML = '';
             itemsContainer.appendChild(createItemRow(editData));
             
             updateTotal();
-            submitBtn.textContent = '編集を保存';
-            addItemBtn.style.display = 'none';
+            if (submitBtn) submitBtn.textContent = '編集を保存';
+            if (addItemBtn) addItemBtn.style.display = 'none';
         } else {
+            // 新規追加モード
             addItemRow();
         }
 
-        addItemBtn.addEventListener("click", addItemRow);
-        submitBtn.addEventListener("click", submitData);
+        if (addItemBtn) addItemBtn.addEventListener("click", addItemRow);
+        if (submitBtn) submitBtn.addEventListener("click", submitData);
     }
 
     initialize();
