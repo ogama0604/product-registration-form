@@ -31,7 +31,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // ★★★ ここにご自身のGASのURLを貼り付けてください ★★★
     const gasUrl = "https://script.google.com/macros/s/AKfycbxPjG8L8T_9pI-i-WyLWL1q9wg_N6Op5-cXPEKRu0xsdHGEMUEk3l6unyvyyHVxIbQQkw/exec";
 
-    // --- 品目入力欄を作成する関数 ---
+    // --- 品目入力欄を追加する関数 (新規入力用) ---
+    function addItemRow() {
+        const div = createItemRow({}); // createItemRow関数を再利用
+        itemsContainer.appendChild(div);
+    }
+
+    // --- 品目入力欄を作成する関数 (共通) ---
     function createItemRow(item = {}) {
         const div = document.createElement("div");
         div.classList.add("item-row");
@@ -139,9 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function submitData(e) {
         e.preventDefault();
 
-        // 編集モードか新規追加か判定
         const isEditMode = !!editData;
-        
         const items = [];
         document.querySelectorAll(".item-row").forEach(row => {
             const inputs = row.querySelectorAll("input, select");
@@ -157,7 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         
         const dataToSend = {};
-
+        
+        // 編集モードと新規追加モードでデータを分ける
         if (isEditMode) {
             dataToSend.action = 'edit';
             dataToSend.rowIndex = editData.rowIndex;
@@ -174,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 memo: items[0].memo
             };
         } else {
-            dataToSend.action = 'add';
+            dataToSend.action = 'add'; // 新規追加にはactionを追加
             dataToSend.items = items;
             dataToSend.paymentSource = paymentSourceSelect.value;
             dataToSend.date = inputDate.value;
@@ -194,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (result.success) {
                 alert(isEditMode ? "編集を保存しました！" : "送信完了しました！");
                 if (isEditMode) {
-                    window.location.href = 'history.html'; // 履歴ページに戻る
+                    window.location.href = 'history.html';
                 } else {
                     clearAllInputs();
                 }
@@ -223,19 +228,18 @@ document.addEventListener("DOMContentLoaded", () => {
             inputStore.value = editData.store;
             paymentSourceSelect.value = editData.paymentSource;
             
-            // 品目リストをクリアして1つだけ追加
             itemsContainer.innerHTML = '';
             itemsContainer.appendChild(createItemRow(editData));
             
             updateTotal();
             submitBtn.textContent = '編集を保存';
-            addItemBtn.style.display = 'none'; // 新規追加ボタンを非表示
+            addItemBtn.style.display = 'none';
         } else {
             // 新規追加モード
             addItemRow();
         }
 
-        addItemBtn.addEventListener("click", () => itemsContainer.appendChild(createItemRow()));
+        addItemBtn.addEventListener("click", addItemRow);
         submitBtn.addEventListener("click", submitData);
     }
 
